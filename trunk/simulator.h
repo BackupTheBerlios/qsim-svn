@@ -10,6 +10,8 @@
 #include "thief.h"
 #include "building.h"
 
+#define mypow(x,y) pow(float(x),float(y))
+
 class Goal;
 class Agent;
 class Obstacle;

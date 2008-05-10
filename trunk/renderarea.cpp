@@ -11,7 +11,6 @@
 #include "obstacle.h"
 #include "building.h"
 
-
 RenderArea::RenderArea(Simulator* sim, QWidget *parent)
     :
         QWidget(parent),
@@ -127,7 +126,7 @@ float RenderArea::func(int x, int y, int ofx, int ofy, int q)
 {
 	float z;
 
-	z= (sqrt(pow(x-ofx,2) + pow(y-ofy,2)));
+	z= (sqrt(mypow(x-ofx,2) + mypow(y-ofy,2)));
 
 	if(z !=0 ) z =q/z;
 	

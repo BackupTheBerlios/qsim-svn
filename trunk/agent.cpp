@@ -42,7 +42,7 @@ bool Agent::ICB_near()
 			(*build)->_rect.getRect( &x, &y, &w, &h );
 			x += w/2;
 			y += h/2;
- 			if( sqrt(pow(current.x() -x ,2) + pow(current.y() - y,2)) < m_sensor_radio )
+ 			if( sqrt(mypow(current.x() -x ,2) + mypow(current.y() - y,2)) < m_sensor_radio )
 			{
 				return true;
 			}
@@ -118,8 +118,8 @@ void Agent::go_back_igc()
             QPoint pos_goal = m_goal->getPos();
 
             // Verifica se o objetivo já foi atingido
-            if( sqrt(pow((current.x() - m_goal->getPos().x()),2) +
-                 pow((current.y() - m_goal->getPos().y()),2) ) > m_pointSize )
+            if( sqrt(mypow((current.x() - m_goal->getPos().x()),2) +
+                 mypow((current.y() - m_goal->getPos().y()),2) ) > m_pointSize )
             {
                 // Não foi, continua perseguindo
                 setPos( m_simulator->chase( getPos(), m_goal->getPos() ) );
@@ -145,8 +145,8 @@ void Agent::go_back_igc()
                 (*arc)->to->setColor(Qt::red);
                 QPoint ajacent_pot = m_simulator->getGradient( (*arc)->to->getPos() );
                 QPoint current_pot = m_simulator->getGradient( m_center );
-                double potencial_adjacente = (pow(ajacent_pot.x(),2) + pow(ajacent_pot.y(),2));
-                double potencial_atual = (pow(current_pot.x(),2) + pow(current_pot.y(),2));
+                double potencial_adjacente = (mypow(ajacent_pot.x(),2) + mypow(ajacent_pot.y(),2));
+                double potencial_atual = (mypow(current_pot.x(),2) + mypow(current_pot.y(),2));
                 if( potencial_adjacente < potencial_atual )
                 {
                     m_goal  = (*arc)->to;
@@ -249,8 +249,8 @@ Obstacle* Agent::there_is_meteorito_near()
    {
 	   const QPoint point = (*meteorito)->getPos();
   		QPoint current = Object::getPos();
-		if( sqrt(pow((current.x() - point.x()),2) +
-           pow((current.y() - point.y()),2) ) < m_sensor_radio &&
+		if( sqrt(mypow((current.x() - point.x()),2) +
+           mypow((current.y() - point.y()),2) ) < m_sensor_radio &&
 		 	!(*meteorito)->m_catched )
 		{
 			return (*meteorito);
@@ -261,8 +261,8 @@ Obstacle* Agent::there_is_meteorito_near()
 bool Agent::catched_meteorito( Object* meteorito )
 {
    QPoint current = Object::getPos();
-	if( sqrt(pow((current.x() - meteorito->getPos().x()),2) +
-   		pow((current.y() - meteorito->getPos().y()),2) ) < m_pointSize )
+	if( sqrt(mypow((current.x() - meteorito->getPos().x()),2) +
+   		mypow((current.y() - meteorito->getPos().y()),2) ) < m_pointSize )
 	{
 		return true;
 	}
@@ -291,8 +291,8 @@ void Agent::walk_in_graph()
 	{			  
 		setPos(m_simulator->chase( getPos(), m_currentNode->getPos() ));
   	 	QPoint current = Object::getPos();
-		if ( sqrt(pow((current.x() - m_currentNode->getPos().x()),2) +
-   		pow((current.y() - m_currentNode->getPos().y()),2) ) < m_pointSize )
+		if ( sqrt(mypow((current.x() - m_currentNode->getPos().x()),2) +
+   		mypow((current.y() - m_currentNode->getPos().y()),2) ) < m_pointSize )
 		{
 			Node* node = NULL;
   			AdjacencyList::Iterator arc;
