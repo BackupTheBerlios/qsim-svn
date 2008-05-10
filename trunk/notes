@@ -1,0 +1,24 @@
+tos, sob as seguintes condições:
+
+    - inicialmente o agente se encontra em uma base.
+    - ele deve explorar o ambiente para descobrir onde se encontram os objetos.
+    - uma vez localizado um objeto, deve decidir se deve coletá-lo.
+    - coletado um objeto, deve retornar a base e começar novamente.
+    
+Uma possível modelagem do agente utilizando os elementos acima seria:
+
+Estados:
+    - inicial
+    - procurando objeto
+    - recolhendo objeto
+    - retornando à base (com o objeto)
+
+Comportamentos:
+    - explorar ambiente
+    - pegar objeto
+
+Ações: 
+    - mover para uma determinada posição
+    - deliberar
+    - pegar objeto
+    - detectar objeto (sensor)
