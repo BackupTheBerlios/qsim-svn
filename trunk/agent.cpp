@@ -7,6 +7,7 @@
 #include "building.h"
 #include "simulator.h"
 #include "message.h"
+#include "goal.h"
 
 Agent::Agent( Simulator* sim, const QPoint& point, int r )
     :
@@ -15,14 +16,17 @@ Agent::Agent( Simulator* sim, const QPoint& point, int r )
     m_oldpos(point),
     m_storeTrajectory(false),
     m_pointSize(10),
+    velocity(10),
 	_state(0),
     m_agent_state(SEARCH_METEORITO),
     m_catched_meteorito(false),
-    m_sensor_radio(120),
+    m_sensor_radio(15),
     m_currentNode(NULL),
 	 FACTOR_RANDOM(0.0),
     m_meteorito(NULL),
-    goal_changed(true)
+    goal_changed(true),
+    m_color(Qt::green),
+    m_change(false)
 {
 }
 
@@ -242,8 +246,6 @@ void Agent::drunk()
 
 Obstacle* Agent::there_is_meteorito_near()
 {
-
-
 	for( ObjectGroup<Obstacle*>::iterator meteorito = m_simulator->m_obstacles.begin(); 
 						 	meteorito != m_simulator->m_obstacles.end();	++meteorito )
    {
@@ -256,7 +258,27 @@ Obstacle* Agent::there_is_meteorito_near()
 			return (*meteorito);
 		}
 	}
-	return NULL;}
+	return NULL;
+}
+
+Agent* Agent::there_is_agent_near()
+{
+	for( ObjectGroup<Agent*>::iterator meteorito = m_simulator->getAgents().begin(); 
+						 	meteorito != m_simulator->getAgents().end();	++meteorito )
+   {
+       if ((*meteorito) == this)
+           continue;
+
+	   const QPoint point = (*meteorito)->getPos();
+  		QPoint current = Object::getPos();
+		if( sqrt(mypow((current.x() - point.x()),2) +
+           mypow((current.y() - point.y()),2) ) < m_sensor_radio)
+		{
+			return (*meteorito);
+		}
+	}
+	return NULL;
+}
 
 bool Agent::catched_meteorito( Object* meteorito )
 {
@@ -339,7 +361,7 @@ void Agent::catch_meteorito()
 		// remove o objeto meteorito da lista do simulador
 		m_meteorito->m_catched = true;
 		for( ObjectGroup<Obstacle*>::iterator it = m_simulator->m_obstacles.begin(); it != 
-												  m_simulator->m_obstacles.end(); ++it )
+												   m_simulator->m_obstacles.end(); ++it )
     	{
       	if( *it == m_meteorito ) 
 			{
@@ -370,27 +392,65 @@ void Agent::search_meteorito()
 		walk_in_graph();
 }
 
-unsigned int Agent::think(const QPoint &aPoint)
+void Agent::enterMesh()
 {
-	switch( m_agent_state )
-	{
-		case DRINK_BEER:
-				 drink_beer();
-				 break;
-		case DRUNK:
-				 drunk();
-				 break;
-		case SEARCH_METEORITO:
-				 search_meteorito();
-				 break;
-		case CATCH_METEORITO:
-				 catch_meteorito();
-				 break;
-		case GO_BACK_IGC:
-				 go_back_igc();
-				 break;
-	}
-	//m_currentNode = m_simulator->getNavMesh().findNearest( getPos() );
+    m_goal = m_simulator->getNavMesh().findNearest(getPos());
+}
+
+/*void Agent::gotoGoal()
+{
+    ObjectGroup<Goal*>& goals = m_simulator->getGoals();
+    
+    if (goals.isEmpty())
+        return 0;
+
+    Goal* goal = *goals.begin();
+    m_goal = m_simulator->getNavMesh().findNearest(goal->getPos());
+}*/
+
+unsigned int Agent::think(const QPoint &p, bool change)
+{
+    // guarda comando de mudar de pista
+    if (!m_change)
+        m_change = m_simulator->m_change;
+
+    // Select next node to go
+    switch (_state) {
+        case ENTER_NAVIGATION_MESH: {
+            enterMesh();
+        }
+        break;
+    }
+
+    if (!m_goal) {
+        // removeAgent();
+        return 0;
+    }
+
+    if(there_is_agent_near())
+        return 0;
+
+    // Vai até o m_goal
+    QPoint current = Object::getPos();
+    QPoint pos_goal = m_goal->getPos();
+
+    // Verifica se o objetivo já foi atingido
+    if( sqrt(mypow((current.x() - m_goal->getPos().x()),2) +
+         mypow((current.y() - m_goal->getPos().y()),2) ) > m_pointSize )
+    {
+        // Não foi, continua perseguindo
+        setPos( m_simulator->chase( getPos(), m_goal->getPos() ) );
+        if (velocity != m_pointSize)
+            setPos( m_simulator->chase( getPos(), m_goal->getPos() ) );
+    }
+    else {
+        // Chegou no objetivo, 
+        m_currentNode = m_goal;
+        m_goal = m_simulator->getNavMesh().findNext(m_goal, m_change);
+        m_change = false; // desliga o mudar de pista
+        _state = FIND_NEXT_NODE;
+    }
+
     return 0;
 }
 
@@ -424,7 +484,7 @@ void Agent::render( QPainter& painter )
 
     // Draw agent
     painter.setPen(Qt::black);
-    painter.setBrush(Qt::green);
+    painter.setBrush(m_color);
     
     painter.drawRect(QRectF(getPos().x() - m_pointSize,
                         getPos().y() - m_pointSize,

@@ -22,13 +22,16 @@ class Agent : public Object
     protected:
         Simulator* m_simulator;
         Node* m_goal;
+        Node* m_global_goal;
         Node* m_currentNode;
         STATE m_agent_state;
         QPoint m_gradient;
         bool goal_changed;
         bool m_storeTrajectory;
         int m_pointSize;
+
         int _state;
+        
         
         int m_sensor_radio;
         Obstacle* m_meteorito;
@@ -51,6 +54,8 @@ class Agent : public Object
    	    Node* reset_graph();
         bool catched_meteorito( Object* obj );
         Obstacle* there_is_meteorito_near();
+        Agent* there_is_agent_near();
+        
 
         void drink_beer();
         void drunk();
@@ -59,7 +64,12 @@ class Agent : public Object
         void go_back_igc();
         bool ICB_near();
 
+        void enterMesh();
+
     public:
+        int velocity;
+        QColor m_color;
+        bool m_change;
         Agent( Simulator* sim, const QPoint& point, int r );
         ~Agent();
 
@@ -72,7 +82,7 @@ class Agent : public Object
 		Node* getNode() {return m_goal;}
         QVector<QPoint>& trajectory() { return m_trajectory; }
 
-        unsigned int think(const QPoint &p);
+        unsigned int think(const QPoint &p, bool change = false);
         void steal();
         void send(Message& msg);
         void Observe();

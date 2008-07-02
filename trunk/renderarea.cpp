@@ -2,6 +2,7 @@
 #include <QtGui>
 #include <QTimer>
 #include <QLineF>
+#include <QMessageBox>
 
 #include <math.h>
 #include "mainwindow.h"
@@ -272,11 +273,17 @@ void RenderArea::mousePressEvent(QMouseEvent *event)
         break;
 
         case addThief:
-            m_simulation->addThief( event->pos() );
+            if (!m_simulation->addThief( event->pos() ))
+                int ret = QMessageBox::warning(this, tr("Qsim"),
+                                               tr("Skynet congestionada."),
+                                               QMessageBox::Ok, QMessageBox::Ok);
         break;
 
         case addAgent:
-            m_simulation->addAgent( event->pos() );
+            if (!m_simulation->addAgent(event->pos()))
+                int ret = QMessageBox::warning(this, tr("Qsim"),
+                                               tr("Skynet congestionada."),
+                                               QMessageBox::Ok, QMessageBox::Ok);
         break;
 
         case addGoal:

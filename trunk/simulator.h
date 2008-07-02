@@ -72,7 +72,7 @@ public:
     bool removeObstacle( const QPoint& position  );
 
     inline ObjectGroup<Agent*>& getAgents() { return m_agents; }
-    inline ObjectGroup<Thief*>& getThiefs() { return m_thiefs; }
+    inline ObjectGroup<Agent*>& getThiefs() { return m_thiefs; }
     inline ObjectGroup<Goal*>& getGoals() { return m_goals; }
     inline ObjectGroup<Obstacle*>& getObstacles() { return m_obstacles; }
     inline ObjectGroup<Building*>& getBuildings() { return m_buildings; }
@@ -89,6 +89,7 @@ public:
     void save( QString& filename );
     bool load( QString& filename );
     void onMessage(Message& msg);
+    bool m_change;
 
 public slots:
 
@@ -100,6 +101,7 @@ public slots:
 private slots:
  
      void step();
+     bool accept();
 
 private:
 
@@ -111,7 +113,7 @@ private:
     RenderArea* m_view;
     
     ObjectGroup<Agent*> m_agents;
-    ObjectGroup<Thief*> m_thiefs;
+    ObjectGroup<Agent*> m_thiefs;
     ObjectGroup<Goal*>  m_goals;
     NavMesh m_navmesh;
     

@@ -80,6 +80,22 @@ Node* NavMesh::find( QPoint position )
     return 0;
 }
 
+
+Node* NavMesh::findNext(Node *node, bool skip)
+{
+    Node *selected = NULL;
+    for( ArcVector::Iterator arc = _arcs.begin(); arc != _arcs.end(); ++arc )
+    {
+        if ((*arc)->from == node) {
+            selected = (*arc)->to;
+            if (!skip)
+                break;
+            skip = false;
+        }
+    }
+    return selected;
+}
+
 void NavMesh::addNode(const QPoint& position)
 {
     _vertices += new Node(position);
@@ -113,16 +129,16 @@ void NavMesh::addArc(Node* from, Node* to)
 {
     // Cria arcos nos dois sentidos
     Arc* ab = new Arc(from,to);
-    Arc* ba = new Arc(to,from);
+    //Arc* ba = new Arc(to,from);
     
     // Adiciona os arcos no vetor de arcos
     // TODO - do not add an arc twice
     _arcs += ab;
-    _arcs += ba;
+    //_arcs += ba;
 
     // Adiciona os arcos nas respectivas listas de ajacências
     from->adjacents += ab;
-    to->adjacents   += ba;
+    //to->adjacents   += ba;
 }
 
 bool NavMesh::Conected()

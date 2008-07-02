@@ -30,6 +30,7 @@ class NavMesh
 		Node* findNearest( QPoint position );
         Node* searchDepthFirst(Node *start, Node* goal);
         Node* EulerianNext(Node *start);
+        Node* findNext(Node *node, bool skip=false);
         bool joint(Arc*);
         void render(QPainter&);
 

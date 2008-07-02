@@ -9,14 +9,20 @@
 #include "obstacle.h"
 #include "building.h"
 
-
 #include <math.h>
 #include <QFile>
+
+// Times in miliseconds
+const unsigned int VehicleSensorResponse    = 15;
+const unsigned int DeliberationTaskDuration = 20;
+const unsigned int CommunicationDuration    = 15;
+const unsigned int Period                   = 300;
 
 Simulator::Simulator( int x, int y )
     :
     m_sizeX(x),
-    m_sizeY(y)
+    m_sizeY(y),
+    m_change(false)
 {
     m_timer    = new QTimer(this);
     m_interval = 100;
@@ -117,23 +123,27 @@ float Simulator::grady(float x, float y)
 
 void Simulator::step()
 {
+    unsigned int elapsed_time = 0;
 	// aquisição de dados
 	for( ObjectGroup<Agent*>::iterator a = m_agents.begin(); a != m_agents.end(); ++a ) {
-		unsigned int elapsed_time = getPosition(*a);
+		elapsed_time += getPosition(*a);
 	}
 
-	// tomada de decisão
+	// Tomada de decisão
 	decision();
+    elapsed_time += 100;
 
 	// Send commands
     for( ObjectGroup<Agent*>::iterator a = m_agents.begin(); a != m_agents.end(); ++a )
     {
-        unsigned int elapsed_time = (*a)->think(QPoint(0,0));
+        QPoint p(0,0);
+        elapsed_time += (*a)->think(p, m_change);
     }
+    m_change = false;
 
-    for( ObjectGroup<Thief*>::iterator t = m_thiefs.begin(); t != m_thiefs.end(); ++t )
+    for( ObjectGroup<Agent*>::iterator t = m_thiefs.begin(); t != m_thiefs.end(); ++t )
     {
-        unsigned int elapsed_time = (*t)->think();
+        elapsed_time += (*t)->think(QPoint(0,0));
     }
 }
 
@@ -145,20 +155,49 @@ unsigned int Simulator::getPosition(Agent* agent)
 	return SENSOR_RESPONSE + delay;
 }
 
+bool Simulator::accept()
+{
+    unsigned int cpu_time = 
+        m_agents.count() * VehicleSensorResponse +
+        DeliberationTaskDuration +
+        m_agents.count() * CommunicationDuration;
+    if (cpu_time >= Period)
+        return false;
+    else
+        return true;
+}
+
 void Simulator::decision()
 {
+    if (m_thiefs.isEmpty()) {
+        // Ambulância, dar prioridade para ela
+    }
+    else {
+    }
 	// TODO
 }
 
 bool Simulator::addAgent( const QPoint& position )
 {
+    if (!accept()) {
+        return false;
+    }
+
     m_agents += new Agent( this, position, 10 );
     return true;
 }
 
 bool Simulator::addThief( const QPoint& position )
 {
-    m_thiefs += new Thief( this, position, 10 );
+    if (!accept()) {
+        return false;
+    }
+
+    Agent * agent = new Agent( this, position, 10 );
+    agent->m_color = Qt::red;
+    agent->velocity = agent->velocity*2;
+    m_thiefs += agent;
+    m_change = true;
     return true;
 }
 
