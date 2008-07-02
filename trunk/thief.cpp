@@ -17,7 +17,7 @@ Thief::~Thief()
 {
 }
 
-void Thief::think()
+unsigned int Thief::think()
 {
     switch( _state )
     {
@@ -33,6 +33,7 @@ void Thief::think()
             steal(); // Rouba o meteorito
             break;
     }
+    return 0;
 }
 
 // Facilita o acesso à malha de navegação

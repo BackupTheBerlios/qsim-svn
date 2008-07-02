@@ -4,6 +4,7 @@
 #include <QPoint>
 #include <QVector>
 #include <QColor>
+#include <QPainterPath>
 
 #include "object.h"
 
@@ -33,9 +34,10 @@ class Node : public Object
 class Arc
 {
     public:
-        Arc(Node* f, Node* t) : from(f), to(t) {}
+        Arc(Node* f, Node* t) : from(f), to(t), dirty(false) {}
         Node* from;
         Node* to;
+        bool dirty;
 };
 
 #endif

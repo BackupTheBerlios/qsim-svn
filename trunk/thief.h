@@ -17,7 +17,7 @@ class Thief : public Agent
         virtual ~Thief();
 
         virtual void render(QPainter&);
-        virtual void think();
+        virtual unsigned int think();
         
         
     protected:

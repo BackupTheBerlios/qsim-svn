@@ -72,7 +72,7 @@ class Agent : public Object
 		Node* getNode() {return m_goal;}
         QVector<QPoint>& trajectory() { return m_trajectory; }
 
-        void think();
+        unsigned int think(const QPoint &p);
         void steal();
         void send(Message& msg);
         void Observe();

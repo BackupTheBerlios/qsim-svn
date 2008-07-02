@@ -3,11 +3,13 @@
 
 #include <QVector>
 #include <QLine>
+#include <QPainter>
+#include <QPainterPath>
 
 #include "node.h"
 
-class QPoint;
 class QPainter;
+
 
 class NavMesh
 {
@@ -30,6 +32,7 @@ class NavMesh
         Node* EulerianNext(Node *start);
         bool joint(Arc*);
         void render(QPainter&);
+
 	    bool Conected();
 
         QVector<QPoint> getNodes();

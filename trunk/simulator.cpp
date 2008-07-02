@@ -1,12 +1,14 @@
 #include <QTimer>
+#include <QWidget>
 
 #include "thief.h"
+#include "renderarea.h"
 #include "simulator.h"
 #include "agent.h"
 #include "goal.h"
 #include "obstacle.h"
 #include "building.h"
-#include "renderarea.h"
+
 
 #include <math.h>
 #include <QFile>
@@ -21,6 +23,9 @@ Simulator::Simulator( int x, int y )
 
     // evento de timeout() dá um step no simulador
     connect(m_timer, SIGNAL(timeout()), this, SLOT(step()));
+
+	// Seed the randon number generator
+	qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
 }
 
 Simulator::~Simulator()
@@ -32,7 +37,6 @@ void Simulator::setStepInterval( int msec )
 {
     m_timer->setInterval( msec );
 }
-
 
 void Simulator::start()
 {
@@ -113,15 +117,37 @@ float Simulator::grady(float x, float y)
 
 void Simulator::step()
 {
+	// aquisição de dados
+	for( ObjectGroup<Agent*>::iterator a = m_agents.begin(); a != m_agents.end(); ++a ) {
+		unsigned int elapsed_time = getPosition(*a);
+	}
+
+	// tomada de decisão
+	decision();
+
+	// Send commands
     for( ObjectGroup<Agent*>::iterator a = m_agents.begin(); a != m_agents.end(); ++a )
     {
-        (*a)->think();
+        unsigned int elapsed_time = (*a)->think(QPoint(0,0));
     }
-    
+
     for( ObjectGroup<Thief*>::iterator t = m_thiefs.begin(); t != m_thiefs.end(); ++t )
     {
-        (*t)->think();
+        unsigned int elapsed_time = (*t)->think();
     }
+}
+
+const unsigned int SENSOR_RESPONSE = 20;
+
+unsigned int Simulator::getPosition(Agent* agent)
+{
+	int delay = qrand() % 2;
+	return SENSOR_RESPONSE + delay;
+}
+
+void Simulator::decision()
+{
+	// TODO
 }
 
 bool Simulator::addAgent( const QPoint& position )

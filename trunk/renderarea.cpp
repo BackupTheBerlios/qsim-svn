@@ -1,3 +1,4 @@
+#include <QWidget>
 #include <QtGui>
 #include <QTimer>
 #include <QLineF>
@@ -12,15 +13,15 @@
 #include "building.h"
 
 RenderArea::RenderArea(Simulator* sim, QWidget *parent)
-    :
-        QWidget(parent),
-        m_modified(false),
-        scribbling(false),
-        m_drawpot(true),
-        m_agentColor(Qt::green),
-        m_goalColor(Qt::red),
-        m_obstacleColor(Qt::blue),
-        m_simulation(sim)
+:
+    QWidget(parent),
+    m_modified(false),
+    scribbling(false),
+    m_drawpot(true),
+    m_agentColor(Qt::green),
+    m_goalColor(Qt::red),
+    m_obstacleColor(Qt::gray),
+    m_simulation(sim)
 {
     shape = Polygon;
     antialiased = true;
@@ -31,7 +32,7 @@ RenderArea::RenderArea(Simulator* sim, QWidget *parent)
     setBackgroundRole(QPalette::Base);
 
     m_renderLoopTimer = new QTimer(this);
-    m_renderLoopTimer->setInterval( m_refreshRate = 20 );
+    m_renderLoopTimer->setInterval( m_refreshRate = 15 );
     connect(m_renderLoopTimer, SIGNAL(timeout()), this, SLOT(update()));
     m_renderLoopTimer->start();
 
@@ -122,91 +123,13 @@ void setColor(QColor * c, int index)
 
 }
 
-float RenderArea::func(int x, int y, int ofx, int ofy, int q)
-{
-	float z;
-
-	z= (sqrt(mypow(x-ofx,2) + mypow(y-ofy,2)));
-
-	if(z !=0 ) z =q/z;
-	
-	if(z > 2000) z = 2000;
-	else 
-	if(z < 0) z = 0;
-
-	return z;
-
-}
-
-float RenderArea::pot(int x, int y)
-{
-	float sum=3;
-
-    ObjectGroup<Obstacle*> obstacles = m_simulation->getObstacles();
-    for( ObjectGroup<Obstacle*>::iterator it = obstacles.begin();
-         it != obstacles.end();
-         ++it
-       )
-    {
-        const QPoint& point = (*it)->getPos();
-        sum += func(x,y,point.x(),point.y(),200);
-
-    }
-
-    // Desenha todos os goals
-    ObjectGroup<Goal*> goals = m_simulation->getGoals();
-    for( ObjectGroup<Goal*>::iterator it = goals.begin();
-         it != goals.end();
-         ++it
-       )
-    {
-        const QPoint& point = (*it)->getPos();
-        sum -= func(x,y,point.x(),point.y(),200);
-    }
-
-	return sum;
-
-}
-
-void RenderArea::drawPotential()
-{
-    if( !m_drawpot ){
-        pixmap.fill();
-        return;
-    }
-
-    if ( m_navegationType != CAMPO_POTENCIAL ) return;
-
-    QPainter painter(&pixmap);
-	QRect rec;
-	QColor c;
-
-	rec = painter.viewport();
-
-	int x,y,h;
-	float z;
-
-	h= 0;
-	for(x=rec.left();x<rec.right();x+=10)
-		for(y=rec.top();y<rec.bottom();y+=10)
-		{
-			z = pot(x+5,y+5);
-            setColor( &c, log(z)*70 );
-			painter.setBrush(c);	
-			painter.drawRect(x,y,10,10);
-		}
-    m_modified = true;
-    update();
-}
-
 void RenderArea::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
     painter.setPen(Qt::black);
     QRect rect = painter.viewport();
+	painter.setRenderHints(QPainter::Antialiasing);
 
-    if( m_modified )
-	    drawPotential();
     painter.drawPixmap( QPoint(0, 0), pixmap );
 
     // Desenha todos os agentes
@@ -358,7 +281,6 @@ void RenderArea::mousePressEvent(QMouseEvent *event)
 
         case addGoal:
             m_simulation->addGoal( event->pos() );
-            drawPotential();
         break;
         
         case removeAgent:
@@ -371,7 +293,6 @@ void RenderArea::mousePressEvent(QMouseEvent *event)
 
         case addObstacle:
             m_simulation->addObstacle( event->pos() );
-            drawPotential();
             update();
         break;
 
@@ -509,8 +430,8 @@ void RenderArea::setColors()
     // Define as cores dos prédios
     _buildingColor = m_obstacleColor.light(50);
 
-    // Cor dos prédios enquanto eles são desenhados é mais clara e tem transparência
-    _building_tmp_brush = m_obstacleColor.light(100);
+    // Cor dos prédios enquanto eles são desenhados é mais clara
+	_building_tmp_brush = m_obstacleColor.light();
 
 	 _ICB_tmp_brush = Qt::magenta;
  	 _icbColor = Qt::magenta;

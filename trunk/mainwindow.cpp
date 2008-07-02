@@ -54,7 +54,6 @@ void MainWindow::selectNavigationMode(QAction* action)
     if( action == potFieldAct )
     {
         renderArea->CampoPotencial();
-        renderArea->drawPotential();
     }
     else if ( action == chasingAct ) 
     {
@@ -308,10 +307,12 @@ void MainWindow::writeSettings()
 
 void MainWindow::config()
 {
+	/*
     ConfigDialog confd(this);
     confd.exec();
     renderArea->setDrawPot(confd.drawPotential());
     renderArea->drawPotential();
+	*/
 }
 
 

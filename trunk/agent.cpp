@@ -366,10 +366,11 @@ void Agent::search_meteorito()
 		m_agent_state = CATCH_METEORITO;
 		m_meteorito = meteorito;
 	}
-	else	walk_in_graph();
+	else
+		walk_in_graph();
 }
 
-void Agent::think()
+unsigned int Agent::think(const QPoint &aPoint)
 {
 	switch( m_agent_state )
 	{
@@ -389,6 +390,8 @@ void Agent::think()
 				 go_back_igc();
 				 break;
 	}
+	//m_currentNode = m_simulator->getNavMesh().findNearest( getPos() );
+    return 0;
 }
 
 void Agent::render( QPainter& painter )
@@ -423,9 +426,9 @@ void Agent::render( QPainter& painter )
     painter.setPen(Qt::black);
     painter.setBrush(Qt::green);
     
-    painter.drawEllipse(QRectF(getPos().x() - m_pointSize,
+    painter.drawRect(QRectF(getPos().x() - m_pointSize,
                         getPos().y() - m_pointSize,
-                        m_pointSize*2, m_pointSize*2));
+						m_pointSize*2, m_pointSize*2));
 }
 //     if( m_storeTrajectory )
 //     {

@@ -25,5 +25,4 @@ class ActGotoNode : public Action
         Object* _to;
 };
 
-
 #endif

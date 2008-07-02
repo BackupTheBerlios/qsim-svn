@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C++ Express 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qsim", "qsim.vcproj", "{5D584072-B809-37D9-8EE1-2B381F20A7AA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qsim", "qsim.vcproj", "{32205864-077D-3D40-A150-00391EA3517D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,8 +8,9 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5D584072-B809-37D9-8EE1-2B381F20A7AA}.Debug|Win32.ActiveCfg = Debug|Win32
-		{5D584072-B809-37D9-8EE1-2B381F20A7AA}.Release|Win32.ActiveCfg = Release|Win32
+		{32205864-077D-3D40-A150-00391EA3517D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{32205864-077D-3D40-A150-00391EA3517D}.Debug|Win32.Build.0 = Debug|Win32
+		{32205864-077D-3D40-A150-00391EA3517D}.Release|Win32.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

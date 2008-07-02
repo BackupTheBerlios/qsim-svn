@@ -20,6 +20,7 @@
 class Simulator;
 class QTimer;
 
+
 class RenderArea : public QWidget
 {
     Q_OBJECT
@@ -54,7 +55,7 @@ public:
 
     RenderArea( Simulator* sim, QWidget *parent = 0);
     virtual ~RenderArea();
-	void drawPotential();
+
 
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
@@ -89,12 +90,12 @@ private:
     void pickElement(QMouseEvent *event);
     void drawLineTo(const QPoint &endPoint);
     void resizePixmap(QPixmap *pixmap, const QSize &newSize);
-    
+
     Shape shape;
     QPen pen;
 	TIPO_NAVEGACAO m_navegationType;
     QBrush brush;
-    
+
     bool antialiased;
     bool transformed;
     bool m_modified;
@@ -103,7 +104,7 @@ private:
     int m_refreshRate;
     int myPenWidth;
     int m_pointSize;
-    
+
     QPixmap pixmap;
     QPoint lastPoint, arcFrom, arcTo;
     QPoint topLeft, bottomRight;

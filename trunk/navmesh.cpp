@@ -25,23 +25,29 @@ void NavMesh::render(QPainter& painter)
     // Itera entre os vertices do grafo
     for( NodeVector::Iterator v = _vertices.begin(); v != _vertices.end(); ++v )
     {
-        int m_pointSize = 10;
-        const QPoint point = (*v)->getPos();
-        painter.setPen(Qt::gray);
+		int m_pointSize = 10;
+		const QPoint point = (*v)->getPos();
+		painter.setPen(Qt::gray);
         
-        painter.setBrush( (*v)->getColor() );
+		painter.setBrush( (*v)->getColor() );
 
-        painter.drawEllipse(QRectF(point.x() - m_pointSize,
-                    point.y() - m_pointSize,
-                    m_pointSize*2, m_pointSize*2));
+		painter.drawEllipse(QRectF(point.x() - m_pointSize,
+					point.y() - m_pointSize,
+					m_pointSize*2, m_pointSize*2));
 
-        // Desenha os arcos partindo deste nó
-        /// @todo Fazer com que um arco A<->B não seja desenhado 2x
-        AdjacencyList::Iterator arc;
-        for( arc = (*v)->adjacents.begin(); arc != (*v)->adjacents.end(); ++arc )
-        {
-            painter.drawLine( (*arc)->from->getPos(), (*arc)->to->getPos() );
-        }
+		// If there is no arc, continue to the next node
+		if (!(*v)->adjacents.isEmpty()) {
+			// Draw all arcs from this node
+			AdjacencyList::Iterator arcIt;
+			for (arcIt = (*v)->adjacents.begin(); arcIt != (*v)->adjacents.end(); ++arcIt)
+			{
+				QPoint from = (*arcIt)->from->getPos();
+				QPoint to = (*arcIt)->to->getPos();
+				painter.drawLine(from, to);
+				//QRect rect(from,to);
+				//painter.drawRect(rect);
+			}
+		}
     }
 }
 
@@ -110,6 +116,7 @@ void NavMesh::addArc(Node* from, Node* to)
     Arc* ba = new Arc(to,from);
     
     // Adiciona os arcos no vetor de arcos
+    // TODO - do not add an arc twice
     _arcs += ab;
     _arcs += ba;
 

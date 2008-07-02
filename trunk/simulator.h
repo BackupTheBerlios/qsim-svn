@@ -102,8 +102,11 @@ private slots:
      void step();
 
 private:
-    
-    void Simulator::inTorus( QPoint& pt );
+
+	unsigned int getPosition(Agent*);
+	void decision();
+
+    void inTorus( QPoint& pt );
     
     RenderArea* m_view;
     

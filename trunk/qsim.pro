@@ -11,7 +11,7 @@ INCLUDEPATH += .
 HEADERS += action.h \
            agent.h \
            building.h \
-           configdialog.h \
+#           configdialog.h \
            goal.h \
            mainwindow.h \
            message.h \
@@ -24,11 +24,12 @@ HEADERS += action.h \
            state.h \
            thief.h
 
-FORMS += configdialog.ui ui/configdialog.ui
+#FORMS += configdialog.ui
+
 SOURCES += action.cpp \
            agent.cpp \
            building.cpp \
-           configdialog.cpp \
+#           configdialog.cpp \
            goal.cpp \
            main.cpp \
            mainwindow.cpp \

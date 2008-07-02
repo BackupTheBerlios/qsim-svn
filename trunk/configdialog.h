@@ -11,7 +11,7 @@ class ConfigDialog : public QDialog
         ConfigDialog(QWidget *parent = 0);
         ~ConfigDialog();
         
-        bool drawPotential() {  return ( ui.draw_potential->checkState() == Qt::Checked ); }
+//        bool drawPotential() {  return ( ui.draw_potential->checkState() == Qt::Checked ); }
 
     public slots:
         void draw(int);
@@ -20,7 +20,7 @@ class ConfigDialog : public QDialog
     
     private:
 
-        Ui::ConfigDialog ui;
+		Ui::Dialog ui;
         bool m_first;
 };
 

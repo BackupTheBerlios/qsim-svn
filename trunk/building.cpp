@@ -15,7 +15,7 @@ void Building::render(QPainter& painter)
 {
 	if(isICB) 
 		painter.setBrush(Qt::magenta);
-	else painter.setBrush(Qt::blue);
+	else painter.setBrush(Qt::gray);
 
  	painter.drawRect(_rect);
    /// @todo implement me
